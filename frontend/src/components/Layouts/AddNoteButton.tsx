@@ -3,21 +3,25 @@ import { Input } from "@/components/ui/input"
 import { shortenUrl } from "@/services/user/apiMethods";
 import { useState } from "react";
 import { toast } from "sonner";
-// import {useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 
-export function InputWithButton() {
-  // const selectUser = (state: any) => state.auth.user;
-  // const userData = useSelector(selectUser);
-  // const userId = userData._id || "";
+export function InputWithButton({setLinks}:any) {
+  const selectUser = (state: any) => state.auth.user;
+  const userData = useSelector(selectUser);
+  const userId = userData._id || "";
   const [url,setUrl] = useState('');
 
   const handleSubmit=()=>{
     if(url.trim()==='')
       toast("Enter a url");
     else{
-      shortenUrl({fullUrl:url, userId:''}).then((response)=>{
+      shortenUrl({fullUrl:url, userId}).then((response:any)=>{
         toast("url Stortend");
+        setUrl('');
+        const url = response.data
+        setLinks((prev:any)=>[...prev,url])
+        console.log(response)
       })
     }
   }

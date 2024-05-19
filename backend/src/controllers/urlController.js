@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import shortUrl from '../models/urlModel.js'
+import ShortUrl from '../models/urlModel.js'
 
 
 // @desc    Cget all urls
@@ -9,7 +9,7 @@ import shortUrl from '../models/urlModel.js'
 export const getUrlsController = asyncHandler(async (req, res) => {
 
     const { userId } = req.params;
-    const Urls = await shortUrl.find({user:userId});
+    const Urls = await ShortUrl.find({user:userId});
     res.status(200).json(Urls);
   });
 
@@ -21,9 +21,9 @@ export const getUrlsController = asyncHandler(async (req, res) => {
 export const createShortUrlController = asyncHandler(async (req, res) => {
 
   const { fullUrl, userId } = req.body;
-  await shortUrl.create({fullUrl,user:userId});
-  const Urls = await shortUrl.find({});
-
+  console.log(fullUrl, userId)
+  const Urls= await ShortUrl.create({fullUrl,user:userId});
+  console.log(Urls)
   res.status(200).json(Urls);
 });
 
@@ -33,15 +33,22 @@ export const createShortUrlController = asyncHandler(async (req, res) => {
 // @access  Public
 
 export const redirectUrlController = asyncHandler(async (req, res) => {
+  const { shortUrl } = req.params;
+  console.log(shortUrl);
 
-    const { shortUrl } = req.params;
-    const Url = await shortUrl.find({shortUrl});
-    if(Url==null){
-        throw new Error("URL Not Found")
-    }
-  
-    res.status(200).redirect(Url.fullUrl);
-  });
+  const urlDoc = await ShortUrl.findOne({ shortUrl });
+  console.log(urlDoc);
+  if (!urlDoc) {
+    res.status(404);
+    throw new Error("URL Not Found");
+  }
+
+  const fullUrl = urlDoc.fullUrl.startsWith('http://') || urlDoc.fullUrl.startsWith('https://')
+    ? urlDoc.fullUrl
+    : `http://${urlDoc.fullUrl}`;
+
+  res.status(200).redirect(fullUrl);
+});
   
   
   

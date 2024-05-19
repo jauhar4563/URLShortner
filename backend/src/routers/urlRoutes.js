@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
+router.get("/:shortUrl", redirectUrlController);
 router.get("/getUrls/:userId", getUrlsController);
-router.post("/createShortUrl", createShortUrlController);
-router.get("/redirectToUrl", redirectUrlController);
+router.post("/shortenUrl", createShortUrlController);
 
 export default router;

@@ -1,5 +1,5 @@
 import { apiCall } from "./apiCalls";
-import {  userUrls } from "../endPoints";
+import { userUrls } from "../endPoints";
 
 //@dec      Register user
 //method    POST
@@ -169,25 +169,40 @@ export const renewPassword = (userData: {
   });
 };
 
+//@dec      Renew Password
+//method    POST
+
+export const shortenUrl = (urlData: { fullUrl: string; userId: string }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", userUrls.shortenUrl, urlData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
 
 //@dec      Renew Password
 //method    POST
 
-export const shortenUrl = (urlData: {
-    fullUrl: string;
-    userId: string;
-  }) => {
-    return new Promise((resolve, reject) => {
-      try {
-        apiCall("post", userUrls.shortenUrl, urlData)
-          .then((response) => {
-            resolve(response);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      } catch (error) {
-        resolve({ status: 500, message: "Somethings wrong." });
-      }
-    });
-  };
+export const getUrls = (userId: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("get", `${userUrls.getUrl}/${userId}`, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
