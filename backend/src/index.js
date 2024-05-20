@@ -39,7 +39,7 @@ app.use("/api/", userRoutes);
 app.use("/api/url/", urlRoutes);
 
 connectDB();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.use(errorHandler);
 
