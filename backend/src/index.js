@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: "GET,HEAD,POST,DELETE",
     credentials: true,
   })
@@ -44,5 +44,5 @@ const port = process.env.PORT || 5000;
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at https://localhost:${port}`);
+  console.log(`[server]: Server is running at https://localhost:${port} and ${process.env.MONGO_URL}`);
 });
