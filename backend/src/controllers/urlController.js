@@ -3,7 +3,7 @@ import ShortUrl from '../models/urlModel.js'
 
 
 // @desc    Cget all urls
-// @route   USER /getUrls
+// @route   url /getUrls
 // @access  Public
 
 export const getUrlsController = asyncHandler(async (req, res) => {
@@ -15,7 +15,7 @@ export const getUrlsController = asyncHandler(async (req, res) => {
 
 
 // @desc    Creating a new Short Url
-// @route   USER /shortenUrl
+// @route   url /shortenUrl
 // @access  Public
 
 export const createShortUrlController = asyncHandler(async (req, res) => {
@@ -29,7 +29,7 @@ export const createShortUrlController = asyncHandler(async (req, res) => {
 
 
 // @desc    Controller to redirect to the full Url 
-// @route   USER /redirectUrl
+// @route   url /redirectUrl
 // @access  Public
 
 export const redirectUrlController = asyncHandler(async (req, res) => {
@@ -51,4 +51,16 @@ export const redirectUrlController = asyncHandler(async (req, res) => {
 });
   
   
+  // @desc    Controller to Remove a URl
+// @route   url/removeUrl
+// @access  Public
+
+export const removeUrl = asyncHandler(async (req, res) => {
+  const { shortUrl } = req.params;
+  console.log(shortUrl);
+
+  const urlDoc = await ShortUrl.deleteOne({ shortUrl });
+
+  res.status(200).json({message:'URL removed successfully'});
+});
   
