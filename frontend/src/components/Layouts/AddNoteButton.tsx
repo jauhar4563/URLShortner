@@ -14,7 +14,7 @@ export function InputWithButton({setLinks}:any) {
 
   const handleSubmit=()=>{
     if(url.trim()==='')
-      toast("Enter a url");
+      toast.error("Enter a url");
     else{
       shortenUrl({fullUrl:url, userId}).then((response:any)=>{
         toast("url Stortend");

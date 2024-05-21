@@ -1,4 +1,3 @@
-// import Image from "next/image"
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,24 +9,52 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { signInWithPopup } from "firebase/auth";
 import { useState } from "react";
+import {
+  validateEmail,
+  validatePassword,
+} from "@/utils/validations/loginValidations";
 
 export function LoginPart() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [error,setError] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const submit = () => {
-    // if(!email.trim())
-    //     setError('Enter email');
-    // else if(!password.trim())
-    //     setError('Enter Password');
+    let valid = true;
+
+    if (!email.trim()) {
+      setEmailError("Enter email");
+      valid = false;
+    } else if (!validateEmail(email)) {
+      setEmailError("Enter a valid email");
+      valid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password.trim()) {
+      setPasswordError("Enter password");
+      valid = false;
+    } else if (!validatePassword(password)) {
+      setPasswordError(
+        "Password must be at least 8 characters long and contain at least one number and one special character"
+      );
+      valid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!valid) return;
+
     const values = {
       email,
       password,
     };
+
     postLogin(values)
       .then((response: any) => {
         const data = response.data;
@@ -47,7 +74,7 @@ export function LoginPart() {
   };
 
   const handlegoogleSignUp = () => {
-    signInWithPopup(auth, provider).then((data: any) => {
+    signInWithPopup(auth, provider).then((data) => {
       console.log(data);
 
       const userData = {
@@ -69,7 +96,7 @@ export function LoginPart() {
             toast.error(data.message);
           }
         })
-        .catch((error: any) => {
+        .catch((error) => {
           console.log(error?.message);
           toast.error(error?.message);
         });
@@ -96,6 +123,7 @@ export function LoginPart() {
               placeholder="Enter Email"
               required
             />
+            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
@@ -109,6 +137,9 @@ export function LoginPart() {
               type="password"
               required
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm">{passwordError}</p>
+            )}
           </div>
           <Button type="submit" onClick={submit} className="w-full">
             Login

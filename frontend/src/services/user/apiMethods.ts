@@ -86,9 +86,9 @@ export const postLogin = (userData: { email: string; password: string }) => {
 //method    POST
 
 export const googleAuthenticate = (userData: {
-  username: string;
-  email: string;
-  imageUrl: string;
+  username: string | null;
+  email: string | null;
+  imageUrl: string | null;
 }) => {
   return new Promise((resolve, reject) => {
     try {
@@ -206,3 +206,25 @@ export const getUrls = (userId: string) => {
     }
   });
 };
+
+
+//@dec      Remove URL
+//method    POST
+
+export const removeUrl = (shortUrl: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("delete", `${userUrls.removeUrl}/${shortUrl}`, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+

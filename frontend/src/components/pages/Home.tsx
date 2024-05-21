@@ -30,7 +30,7 @@ function Home() {
       </div>
       <div className=" flex gap-5 flex-wrap justify-center  mt-14">
         {links.map((link) => (
-          <Links link={link} />
+          <Links link={link} setLinks={setLinks}/>
         ))}
       </div>
     </div>

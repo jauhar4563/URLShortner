@@ -9,6 +9,7 @@ export const userUrls = {
     resetPassword: "/reset-password",
     shortenUrl:'/url/shortenUrl',
     getUrl:'/url/getUrls',
-    redirectUrl:'/url/redirectUrl'
+    redirectUrl:'/url/redirectUrl',
+    removeUrl:'/url/removeUrl'
   };
   

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { signInWithPopup } from "firebase/auth";
 import { provider, auth } from "../../utils/firebase/config";
 import { loginSuccess } from "@/utils/context/authSlice";
+import { validateEmail,validatePassword } from "@/utils/validations/loginValidations";
 
 export function SignupForm() {
   const dispatch = useDispatch();
@@ -16,14 +17,51 @@ export function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
+
+
   const submit = () => {
+    let isValid = true;
+
+    if (!name.trim()) {
+      setNameError("Enter your name");
+      isValid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (!email.trim()) {
+      setEmailError("Enter your email");
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      setEmailError("Enter a valid email");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password.trim()) {
+      setPasswordError("Enter your password");
+      isValid = false;
+    } else if (!validatePassword(password)) {
+      setPasswordError("Password must be at least 8 characters long and contain at least one number and one special character");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!isValid) return;
+
     const values = {
       name,
       email,
       password,
     };
+
     postRegister(values)
       .then((response: any) => {
         const data = response.data;
@@ -38,10 +76,9 @@ export function SignupForm() {
         toast.error(error?.message);
       });
   };
-  const handlegoogleSignUp = () => {
-    signInWithPopup(auth, provider).then((data: any) => {
-      console.log(data);
 
+  const handlegoogleSignUp = () => {
+    signInWithPopup(auth, provider).then((data) => {
       const userData = {
         username: data.user.displayName,
         email: data.user.email,
@@ -56,12 +93,11 @@ export function SignupForm() {
             dispatch(loginSuccess({ user: data }));
             navigate("/");
           } else {
-            console.log(response.message);
             toast.error(data.message);
           }
         })
         .catch((error) => {
-          console.log(error?.message);
+          toast.error(error?.message);
         });
     });
   };
@@ -77,17 +113,15 @@ export function SignupForm() {
         </div>
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              placeholder="Frist Name" required />
-            </div>
-            {/* <div className="grid gap-2">
-              <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name" placeholder="Last Name" required />
-            </div> */}
+            <Label htmlFor="first-name">First name</Label>
+            <Input
+              id="first-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="First Name"
+              required
+            />
+            {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -99,6 +133,7 @@ export function SignupForm() {
               placeholder="Enter your email"
               required
             />
+            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
@@ -108,7 +143,9 @@ export function SignupForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter Password"
               type="password"
+              required
             />
+            {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
           </div>
           <Button type="button" onClick={submit} className="w-full">
             Create an account
